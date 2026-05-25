@@ -1,8 +1,16 @@
 import { motion } from "framer-motion";
 import { Calendar, Lightbulb, Users } from "lucide-react";
 
-const IMG_TEAM = "";
-const IMG_CLASS = "";
+/* =========================================================
+ * IMAGEM (placeholder seguro)
+ * ========================================================= */
+
+const IMG_TEAM =
+  "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80";
+
+/* =========================================================
+ * TIMELINE
+ * ========================================================= */
 
 const timeline = [
   {
@@ -24,6 +32,10 @@ const timeline = [
     side: "right",
   },
 ];
+
+/* =========================================================
+ * HERO
+ * ========================================================= */
 
 function PageHero() {
   return (
@@ -68,6 +80,10 @@ function PageHero() {
     </div>
   );
 }
+
+/* =========================================================
+ * PAGE
+ * ========================================================= */
 
 export function HistoriaPage() {
   return (
@@ -118,7 +134,9 @@ export function HistoriaPage() {
 
                   {/* ICON */}
                   <div className="relative">
-                    <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center`}>
+                    <div
+                      className={`w-12 h-12 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center`}
+                    >
                       <Icon className="text-white w-5 h-5" />
                     </div>
                     <div className="absolute inset-0 rounded-full blur-md opacity-30 bg-emerald-400" />
@@ -133,7 +151,11 @@ export function HistoriaPage() {
 
         {/* BOTTOM IMAGE */}
         <div className="mt-24 relative rounded-3xl overflow-hidden h-72 border border-white/10">
-          <img src={IMG_TEAM} className="w-full h-full object-cover" />
+          <img
+            src={IMG_TEAM}
+            className="w-full h-full object-cover"
+            alt="Equipe Nexus"
+          />
 
           <div className="absolute inset-0 bg-gradient-to-t from-[#070A12] via-[#070A12]/40 to-transparent" />
 

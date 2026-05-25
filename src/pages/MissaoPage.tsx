@@ -1,5 +1,17 @@
 import { motion } from "framer-motion";
-import { Target, Eye, Globe, Zap, Shield, Users, TrendingUp, Star } from "lucide-react";
+import {
+  Target,
+  Eye,
+  Globe,
+  Zap,
+  Shield,
+  Users,
+  TrendingUp,
+} from "lucide-react";
+
+/* =========================================================
+ * MISSÃO
+ * ========================================================= */
 
 const mission = {
   icon: Target,
@@ -16,6 +28,10 @@ const mission = {
   ],
 };
 
+/* =========================================================
+ * VISÃO
+ * ========================================================= */
+
 const vision = {
   icon: Eye,
   label: "Visão",
@@ -31,49 +47,68 @@ const vision = {
   ],
 };
 
+/* =========================================================
+ * VALORES
+ * ========================================================= */
+
 const values = [
   {
     icon: Globe,
     title: "Sustentabilidade",
     description:
       "Toda decisão é orientada pelo impacto ambiental e pela construção de soluções responsáveis.",
-    color: "from-emerald-500 to-green-600",
   },
   {
     icon: Zap,
     title: "Inovação",
     description:
       "Aplicação contínua de tecnologias avançadas para resolver desafios climáticos complexos.",
-    color: "from-green-400 to-emerald-500",
   },
   {
     icon: Shield,
     title: "Integridade",
     description:
       "Transparência e responsabilidade no uso e processamento de dados ambientais.",
-    color: "from-emerald-600 to-green-700",
   },
   {
     icon: Users,
     title: "Colaboração",
     description:
       "Construção de soluções abertas e colaborativas com impacto global.",
-    color: "from-green-500 to-emerald-400",
   },
   {
     icon: TrendingUp,
     title: "Precisão",
     description:
       "Foco em análise de dados confiáveis para suporte à tomada de decisão ambiental.",
-    color: "from-emerald-400 to-green-500",
   },
 ];
 
+/* =========================================================
+ * COMPROMISSOS
+ * ========================================================= */
+
 const commitments = [
-  { number: "ODS 13", label: "Ação Climática", desc: "Alinhados à agenda global de sustentabilidade" },
-  { number: "2026", label: "Infraestrutura Ativa", desc: "Sistema em constante evolução tecnológica" },
-  { number: "100%", label: "Foco em Impacto", desc: "Tecnologia orientada a resultados ambientais" },
+  {
+    number: "ODS 13",
+    label: "Ação Climática",
+    desc: "Alinhados à agenda global de sustentabilidade",
+  },
+  {
+    number: "2026",
+    label: "Infraestrutura Ativa",
+    desc: "Sistema em constante evolução tecnológica",
+  },
+  {
+    number: "100%",
+    label: "Foco em Impacto",
+    desc: "Tecnologia orientada a resultados ambientais",
+  },
 ];
+
+/* =========================================================
+ * PAGE
+ * ========================================================= */
 
 export function MissaoPage() {
   return (
@@ -81,7 +116,9 @@ export function MissaoPage() {
 
       {/* HERO */}
       <div className="relative pt-32 pb-16 overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.05]"
+
+        <div
+          className="absolute inset-0 opacity-[0.05]"
           style={{
             backgroundImage: `linear-gradient(#10B981 1px, transparent 1px), linear-gradient(90deg, #10B981 1px, transparent 1px)`,
             backgroundSize: "56px 56px",
@@ -114,6 +151,7 @@ export function MissaoPage() {
 
         {/* MISSÃO / VISÃO */}
         <div className="grid md:grid-cols-2 gap-6 mb-16">
+
           {[mission, vision].map((item) => {
             const Icon = item.icon;
 
@@ -134,9 +172,7 @@ export function MissaoPage() {
                   {item.title}
                 </h2>
 
-                <p className="text-gray-400 mb-6">
-                  {item.description}
-                </p>
+                <p className="text-gray-400 mb-6">{item.description}</p>
 
                 <ul className="space-y-2">
                   {item.highlights.map((h) => (

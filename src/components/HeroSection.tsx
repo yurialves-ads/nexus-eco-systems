@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import {
   Sparkles,
-  Leaf,
   ShieldCheck,
   Code2,
   Cpu,
@@ -9,8 +8,6 @@ import {
   Activity,
   Layers,
 } from "lucide-react";
-
-import { useNavigate } from "react-router-dom";
 
 /* =========================================================
  * ESTATÍSTICAS
@@ -39,8 +36,6 @@ const stats = [
  * ========================================================= */
 
 export function HeroSection() {
-  const navigate = useNavigate();
-
   return (
     <section className="relative min-h-screen overflow-hidden bg-black flex items-center pt-28">
 
@@ -85,7 +80,7 @@ export function HeroSection() {
           }}
         />
       ))}
-     
+
       {/* CONTEÚDO */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full">
         <div className="grid lg:grid-cols-[1.25fr_1fr] gap-14 items-center">
@@ -133,7 +128,7 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* DIREITA — CONTROL PANEL REALISTA (NÍVEL PRODUTO) */}
+          {/* DIREITA — CONTROL PANEL REALISTA */}
           <div className="relative hidden lg:flex justify-center items-center min-h-[560px]">
 
             {/* GLOW BASE */}
@@ -168,7 +163,7 @@ export function HeroSection() {
                 </div>
               </div>
 
-              {/* STREAM VISUAL (ENGINE FLOW) */}
+              {/* STREAM VISUAL */}
               <div className="space-y-3">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div
