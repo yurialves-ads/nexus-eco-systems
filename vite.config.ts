@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  base: '/BitLearning---site/', // ✅ ADICIONE ISSO
+  base: '/',
 
   plugins: [
     react(),
