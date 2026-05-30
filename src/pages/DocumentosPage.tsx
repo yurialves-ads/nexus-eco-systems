@@ -4,7 +4,7 @@ import {
   FileText,
   Search,
   FolderOpen,
-  Presentation,
+  
 } from "lucide-react";
 
 type DocCategory =
@@ -24,67 +24,11 @@ const categories: DocCategory[] = [
   "Registros Internos",
 ];
 
-const documents = [
-  {
-    id: 1,
-    title: "Arquitetura do Sistema Nexus",
-    description:
-      "Documento técnico definindo estrutura de dados, módulos e integração da plataforma de inteligência climática.",
-    category: "Relatórios de Engenharia" as DocCategory,
-    type: "PDF",
-    size: "2.4 MB",
-    date: "Mar 2026",
-    author: "Equipe Nexus",
-    icon: FileText,
-    color: "from-emerald-500 to-green-600",
-    status: "Estável",
-  },
-  {
-    id: 2,
-    title: "Apresentação de Produto — Nexus Climate Platform",
-    description:
-      "Deck técnico e estratégico apresentando a solução de análise climática e seus módulos principais.",
-    category: "Apresentações Técnicas" as DocCategory,
-    type: "PPTX",
-    size: "8.1 MB",
-    date: "Mar 2026",
-    author: "Engenharia Nexus",
-    icon: Presentation,
-    color: "from-cyan-500 to-emerald-500",
-    status: "Finalizado",
-  },
-  {
-    id: 3,
-    title: "Especificação de Módulo de IA Climática",
-    description:
-      "Definição de requisitos para modelos de análise preditiva e processamento de dados ambientais.",
-    category: "Especificações" as DocCategory,
-    type: "DOCX",
-    size: "1.8 MB",
-    date: "Abr 2026",
-    author: "Time de IA",
-    icon: FileText,
-    color: "from-green-500 to-emerald-600",
-    status: "Em desenvolvimento",
-  },
-];
-
 export function DocumentosPage() {
-  const [activeCategory, setActiveCategory] = useState<DocCategory>("Todos");
+  const [activeCategory, setActiveCategory] =
+    useState<DocCategory>("Todos");
+
   const [search, setSearch] = useState("");
-
-  const filtered = documents.filter((doc) => {
-    const matchCat =
-      activeCategory === "Todos" || doc.category === activeCategory;
-
-    const matchSearch =
-      search === "" ||
-      doc.title.toLowerCase().includes(search.toLowerCase()) ||
-      doc.description.toLowerCase().includes(search.toLowerCase()) ||
-      doc.author.toLowerCase().includes(search.toLowerCase());
-
-    return matchCat && matchSearch;
-  });
 
   return (
     <div className="bg-[#070A12] min-h-screen">
@@ -173,9 +117,9 @@ export function DocumentosPage() {
           ))}
         </div>
 
-        {/* EMPTY STATE (intencionalmente simplificado como base técnica) */}
         <div className="text-center text-gray-500 text-sm border border-white/10 rounded-2xl p-10 bg-white/[0.02]">
-          Módulo de visualização de documentos técnicos ativo. Cards disponíveis para integração.
+          Módulo de visualização de documentos técnicos ativo.
+          Cards disponíveis para integração.
         </div>
 
       </div>
