@@ -450,37 +450,7 @@ export function SiteHeader() {
                 </div>
 
                 {/* CTA MOBILE */}
-                <motion.button
-                  whileHover={{
-                    scale: 1.01,
-                  }}
-                  whileTap={{
-                    scale: 0.98,
-                  }}
-                  onClick={() =>
-                    handleNavigate("/integrantes")
-                  }
-                  className="
-                    mt-5
-                    w-full
-                    relative
-                    overflow-hidden
-                    px-6
-                    py-4
-                    rounded-2xl
-                    bg-gradient-to-r
-                    from-emerald-400
-                    to-green-500
-                    text-black
-                    font-black
-                  "
-                >
-                  <span className="relative flex items-center justify-center gap-2">
-                    Conhecer Equipe
-
-                    <Sparkles className="w-4 h-4" />
-                  </span>
-                </motion.button>
+                
               </div>
             </motion.div>
           )}

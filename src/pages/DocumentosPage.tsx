@@ -151,8 +151,7 @@ export function DocumentosPage() {
           <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/10 bg-white/[0.03]">
             <FileText className="w-4 h-4 text-emerald-400" />
             <span className="text-gray-400 text-sm">
-              <span className="text-white font-semibold">{filtered.length}</span>{" "}
-              de {documents.length} documentos
+              Documentação Técnica
             </span>
           </div>
         </motion.div>
