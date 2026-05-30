@@ -209,7 +209,7 @@ export function SiteHeader() {
                     mt-1.5
                   "
                 >
-                  Sustainable Intelligence
+                  Inteligência Sustentável e Inovadora
                 </p>
               </div>
             </motion.button>
