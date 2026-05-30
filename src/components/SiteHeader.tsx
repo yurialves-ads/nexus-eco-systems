@@ -18,7 +18,6 @@ import {
 import {
   Menu,
   X,
-  Sparkles,
 } from "lucide-react";
 
 /* =========================================================
@@ -449,8 +448,6 @@ export function SiteHeader() {
                   })}
                 </div>
 
-                {/* CTA MOBILE */}
-                
               </div>
             </motion.div>
           )}
