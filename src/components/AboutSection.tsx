@@ -676,48 +676,51 @@ export function AboutSection() {
               </h3>
             </div>
 
-            {/* Botão */}
-            <motion.button
-              whileHover={{
-                scale: 1.05,
-              }}
-              whileTap={{
-                scale: 0.96,
-              }}
-              className="
-                group
-                flex
-                items-center
-                justify-center
-                gap-3
-                px-8
-                py-4
-                rounded-2xl
-                bg-gradient-to-r
-                from-emerald-400
-                to-green-500
-                text-black
-                font-black
-                text-sm
-                sm:text-base
-                lg:text-lg
-                shadow-2xl
-                shadow-emerald-500/30
-                w-full
-                sm:w-auto
-              "
-            >
-              Explorar Soluções
+            <motion.a
+            href="https://nexuslabs44.github.io/Nexus/"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{
+              scale: 1.05,
+            }}
+            whileTap={{
+              scale: 0.96,
+            }}
+            className="
+              group
+              flex
+              items-center
+              justify-center
+              gap-3
+              px-8
+              py-4
+              rounded-2xl
+              bg-gradient-to-r
+              from-emerald-400
+              to-green-500
+              text-black
+              font-black
+              text-sm
+              sm:text-base
+              lg:text-lg
+              shadow-2xl
+              shadow-emerald-500/30
+              w-full
+              sm:w-auto
+              cursor-pointer
+            "
+          >
+            Explorar Soluções
 
-              <ArrowRight
-                className="
-                  w-5
-                  h-5
-                  group-hover:translate-x-1
-                  transition-transform
-                "
-              />
-            </motion.button>
+            <ArrowRight
+              className="
+                w-5
+                h-5
+                group-hover:translate-x-1
+                transition-transform
+              "
+            />
+          </motion.a>
           </div>
         </motion.div>
       </div>
