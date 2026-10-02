@@ -1,218 +1,403 @@
-import { motion } from "framer-motion";
-import {
-  Sparkles,
-  ShieldCheck,
-  Code2,
-  Cpu,
-  Database,
-  Activity,
-  Layers,
-} from "lucide-react";
-
-/* =========================================================
- * ESTATÍSTICAS
- * ========================================================= */
-
-const stats = [
-  {
-    value: "Inovação",
-    label: "Arquitetura de Sistemas Inteligentes",
-    icon: Sparkles,
-  },
-  {
-    value: "Programação",
-    label: "Engenharia de Software Sustentável",
-    icon: Code2,
-  },
-  {
-    value: "Monitoramento",
-    label: "Observabilidade Contínua de Sistemas",
-    icon: ShieldCheck,
-  },
-];
-
-/* =========================================================
- * COMPONENTE HERO
- * ========================================================= */
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowDownRight } from "lucide-react";
 
 export function HeroSection() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className="relative min-h-screen overflow-hidden bg-black flex items-center pt-28">
-
-      {/* BACKGROUND AMBIENTAL */}
-      <div className="absolute inset-0">
+    <section
+      id="home"
+      className="
+        relative
+        flex
+        min-h-screen
+        items-center
+        justify-center
+        overflow-hidden
+        bg-[#030504]
+        text-white
+      "
+    >
+      {/* =========================================================
+          BACKGROUND
+      ========================================================= */}
+      <div className="pointer-events-none absolute inset-0">
+        {/* Green ambient glow */}
         <motion.div
-          animate={{ scale: [1, 1.1, 1], opacity: [0.35, 0.6, 0.35] }}
-          transition={{ duration: 14, repeat: Infinity }}
-          className="absolute top-[-15%] left-[-10%] w-[800px] h-[800px] bg-emerald-500/15 rounded-full blur-[160px]"
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  scale: [1, 1.08, 1],
+                  opacity: [0.5, 0.7, 0.5],
+                }
+          }
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="
+            absolute
+            left-1/2
+            top-[-25%]
+            h-[800px]
+            w-[1000px]
+            -translate-x-1/2
+            rounded-full
+            bg-emerald-500/[0.18]
+            blur-[180px]
+          "
         />
 
-        <motion.div
-          animate={{ scale: [1, 1.12, 1], opacity: [0.2, 0.5, 0.2] }}
-          transition={{ duration: 18, repeat: Infinity }}
-          className="absolute bottom-[-20%] right-[-10%] w-[700px] h-[700px] bg-green-400/10 rounded-full blur-[150px]"
+        {/* White ambient glow */}
+        <div
+          className="
+            absolute
+            left-1/2
+            top-1/2
+            h-[600px]
+            w-[900px]
+            -translate-x-1/2
+            -translate-y-1/2
+            rounded-full
+            bg-white/[0.025]
+            blur-[140px]
+          "
         />
-      </div>
 
-      {/* GRID */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
-
-      {/* PARTÍCULAS TÉCNICAS */}
-      {[...Array(18)].map((_, i) => (
+        {/* Bottom green glow */}
         <motion.div
-          key={i}
-          animate={{ y: [0, -35, 0], opacity: [0.2, 1, 0.2] }}
-          transition={{ duration: 4 + i * 0.2, repeat: Infinity }}
-          className="absolute rounded-full bg-emerald-400"
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  x: [-30, 30, -30],
+                  opacity: [0.2, 0.35, 0.2],
+                }
+          }
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="
+            absolute
+            bottom-[-30%]
+            left-1/2
+            h-[600px]
+            w-[900px]
+            -translate-x-1/2
+            rounded-full
+            bg-emerald-400/[0.10]
+            blur-[170px]
+          "
+        />
+
+        {/* Subtle grid */}
+        <div
+          className="absolute inset-0 opacity-[0.025]"
           style={{
-            width: `${2 + i * 0.25}px`,
-            height: `${2 + i * 0.25}px`,
-            left: `${5 + i * 5.5}%`,
-            top: `${8 + i * 4.8}%`,
-            filter: "blur(1px)",
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
           }}
         />
-      ))}
 
-      {/* CONTEÚDO */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full">
-        <div className="grid lg:grid-cols-[1.25fr_1fr] gap-14 items-center">
+        {/* Vertical gradient */}
+        <div
+          className="
+            absolute
+            inset-0
+            bg-[linear-gradient(to_bottom,rgba(3,5,4,0.15),rgba(3,5,4,0.55)_65%,#030504_100%)]
+          "
+        />
 
-          {/* ESQUERDA */}
-          <div>
+        {/* Vignette */}
+        <div
+          className="
+            absolute
+            inset-0
+            bg-[radial-gradient(circle_at_center,transparent_20%,#030504_90%)]
+          "
+        />
+      </div>
 
-            <h1 className="text-[4rem] sm:text-[5.8rem] lg:text-[7.2rem] font-black leading-[0.88] tracking-[-0.07em] text-white">
-              SOFTWARE
-              <span className="block text-emerald-400">SUSTENTÁVEL</span>
-              PARA O FUTURO
-            </h1>
-
-            <p className="mt-8 text-zinc-400 text-lg max-w-xl">
-              A <span className="text-white font-semibold">Nexus</span> desenvolve sistemas de engenharia digital focados em sustentabilidade, performance e inteligência computacional.
-            </p>
-
-            {/* STATS */}
-            <div className="mt-14 grid grid-cols-3 rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl overflow-hidden">
-
-              {stats.map((item, index) => {
-                const Icon = item.icon;
-
-                return (
-                  <div
-                    key={item.label}
-                    className={`flex flex-col items-center justify-center px-6 py-7 ${
-                      index !== stats.length - 1
-                        ? "border-r border-white/10"
-                        : ""
-                    }`}
-                  >
-                    <Icon className="w-5 h-5 text-emerald-400 mb-3" />
-
-                    <span className="text-2xl font-black text-white">
-                      {item.value}
-                    </span>
-
-                    <span className="text-xs text-zinc-500 mt-1 text-center">
-                      {item.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* DIREITA — CONTROL PANEL REALISTA */}
-          <div className="relative hidden lg:flex justify-center items-center min-h-[560px]">
-
-            {/* GLOW BASE */}
-            <div className="absolute w-[520px] h-[520px] bg-emerald-500/10 blur-[140px] rounded-full" />
-
-            {/* ANÉIS SISTÊMICOS */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[540px] h-[540px] border border-emerald-500/10 rounded-full"
+      {/* =========================================================
+          MAIN CONTENT
+      ========================================================= */}
+      <div
+        className="
+          relative
+          z-10
+          mx-auto
+          flex
+          min-h-screen
+          w-full
+          max-w-[1400px]
+          items-center
+          justify-center
+          px-6
+          py-28
+          sm:px-10
+          lg:px-16
+        "
+      >
+        <div className="w-full text-center">
+          {/* =====================================================
+              EYEBROW
+          ===================================================== */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.7,
+            }}
+            className="
+              mb-8
+              flex
+              items-center
+              justify-center
+              gap-4
+            "
+          >
+            <span
+              className="
+                h-px
+                w-8
+                bg-emerald-300/70
+                sm:w-12
+              "
             />
 
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[380px] h-[380px] border border-white/10 rounded-full"
+            <span
+              className="
+                text-[10px]
+                font-medium
+                uppercase
+                tracking-[0.35em]
+                text-zinc-400
+                sm:text-[11px]
+              "
+            >
+              Nexus · Digital Engineering
+            </span>
+
+            <span
+              className="
+                h-px
+                w-8
+                bg-emerald-300/70
+                sm:w-12
+              "
             />
+          </motion.div>
 
-            {/* PAINEL CENTRAL */}
-            <div className="relative z-10 w-[360px] h-[460px] rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 flex flex-col gap-6">
+          {/* =====================================================
+              MAIN TITLE
+          ===================================================== */}
+          <motion.h1
+            initial={{
+              opacity: 0,
+              y: 30,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.9,
+              delay: 0.1,
+            }}
+            className="
+              mx-auto
+              max-w-6xl
+              text-[clamp(3.4rem,9vw,9rem)]
+              font-black
+              leading-[0.82]
+              tracking-[-0.075em]
+            "
+          >
+            <span className="block text-white">SOFTWARE</span>
 
-              {/* HEADER STATUS */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold">
-                  <Activity className="w-4 h-4" />
-                  SYSTEM STATUS
-                </div>
+            <span
+              className="
+                block
+                bg-gradient-to-r
+                from-emerald-300
+                via-white
+                to-emerald-400
+                bg-clip-text
+                text-transparent
+              "
+            >
+              SUSTENTÁVEL
+            </span>
 
-                <div className="flex items-center gap-2 text-xs text-zinc-500">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  ONLINE
-                </div>
-              </div>
+            <span className="block text-white/[0.92]">PARA O FUTURO</span>
+          </motion.h1>
 
-              {/* STREAM VISUAL */}
-              <div className="space-y-3">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div
-                    key={i}
-                    className="h-2 w-full bg-white/10 rounded-full overflow-hidden"
-                  >
-                    <motion.div
-                      animate={{ x: ["-120%", "120%"] }}
-                      transition={{
-                        duration: 2.2 + i * 0.2,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      className="h-full w-1/2 bg-emerald-400/40 rounded-full"
-                    />
-                  </div>
-                ))}
-              </div>
+          {/* =====================================================
+              DESCRIPTION
+          ===================================================== */}
+          <motion.p
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.8,
+              delay: 0.3,
+            }}
+            className="
+              mx-auto
+              mt-8
+              max-w-2xl
+              text-sm
+              leading-7
+              text-zinc-400
+              sm:text-base
+              lg:text-lg
+            "
+          >
+            Engenharia de software, dados e inteligência computacional para
+            construir sistemas mais eficientes, escaláveis e preparados para o
+            futuro.
+          </motion.p>
 
-              {/* MODULE GRID */}
-              <div className="grid grid-cols-2 gap-3 mt-auto">
+          {/* =====================================================
+              CTA BUTTONS
+          ===================================================== */}
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.8,
+              delay: 0.4,
+            }}
+            className="
+              mt-10
+              flex
+              flex-wrap
+              justify-center
+              gap-4
+            "
+          >
+            {/* Primary CTA */}
+            <a
+              href="#projetos"
+              className="
+                group
+                inline-flex
+                items-center
+                gap-3
+                rounded-full
+                bg-white
+                px-7
+                py-3.5
+                text-sm
+                font-semibold
+                text-black
+                transition-all
+                duration-300
+                hover:bg-emerald-300
+                hover:shadow-[0_0_45px_rgba(52,211,153,0.25)]
+              "
+            >
+              Explorar projetos
+              <ArrowDownRight
+                className="
+                  h-4
+                  w-4
+                  transition-transform
+                  duration-300
+                  group-hover:translate-x-0.5
+                  group-hover:translate-y-0.5
+                "
+              />
+            </a>
 
-                <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
-                  <Cpu className="w-4 h-4 text-emerald-400 mb-2" />
-                  <p className="text-xs text-zinc-400">ENGINE CORE</p>
-                </div>
-
-                <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
-                  <Database className="w-4 h-4 text-emerald-400 mb-2" />
-                  <p className="text-xs text-zinc-400">DATA PIPE</p>
-                </div>
-
-                <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
-                  <Layers className="w-4 h-4 text-emerald-400 mb-2" />
-                  <p className="text-xs text-zinc-400">ARCH LAYER</p>
-                </div>
-
-                <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
-                  <Activity className="w-4 h-4 text-emerald-400 mb-2" />
-                  <p className="text-xs text-zinc-400">OBSERVE</p>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-
+            {/* Secondary CTA */}
+            <a
+              href="#sobre"
+              className="
+                inline-flex
+                items-center
+                rounded-full
+                border
+                border-white/15
+                bg-white/[0.04]
+                px-7
+                py-3.5
+                text-sm
+                font-medium
+                text-white
+                backdrop-blur-xl
+                transition-all
+                duration-300
+                hover:border-emerald-300/30
+                hover:bg-emerald-300/[0.06]
+              "
+            >
+              Conheça a Nexus
+            </a>
+          </motion.div>
         </div>
       </div>
+
+      {/* =========================================================
+          SCROLL INDICATOR
+      ========================================================= */}
+      <motion.div
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : {
+                y: [0, 7, 0],
+              }
+        }
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+        }}
+        className="
+          absolute
+          bottom-7
+          left-1/2
+          hidden
+          -translate-x-1/2
+          flex-col
+          items-center
+          gap-2
+          text-[9px]
+          uppercase
+          tracking-[0.3em]
+          text-zinc-600
+          lg:flex
+        "
+      >
+        <span>Scroll</span>
+
+        <span
+          className="
+            h-7
+            w-px
+            bg-gradient-to-b
+            from-emerald-300/50
+            to-transparent
+          "
+        />
+      </motion.div>
     </section>
   );
 }
