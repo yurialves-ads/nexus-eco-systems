@@ -1,27 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Globe,
-  Pause,
-  Play,
-  Sparkles,
-  ExternalLink,
-} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useInView } from "framer-motion";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 
 const base = import.meta.env.BASE_URL;
-
-// ======================================================
-// TYPES
-// ======================================================
-
-type Position =
-  | "center"
-  | "left"
-  | "right"
-  | "far-left"
-  | "far-right";
 
 type Speaker = {
   id: number;
@@ -29,369 +10,597 @@ type Speaker = {
   role: string;
   company: string;
   topic: string;
-  bio: string;
   image: string;
-  tags: string[];
-  color: string;
+  quote: string;
 };
 
 const speakers: Speaker[] = [
- {
-  id: 7,
-  name: "Yuri Correia",
-  role: "DevOps",
-  company: "Tech Solutions",
-  topic: "Infraestrutura, automação e CI/CD",
-  bio: "Engenheiro DevOps focado em automação de pipelines, infraestrutura como código e melhoria contínua de deploys e confiabilidade de sistemas em produção.",
-  image: `${base}images/yuri.png`,
-  tags: ["DevOps", "CI/CD", "Cloud"],
-  color: "#06B6D4",
-  },
-
   {
-  id: 3,
-  name: "João Lucas",
-  role: "Engenheiro de Software",
-  company: "Tech Solutions",
-  topic: "Arquitetura de sistemas e engenharia de software",
-  bio: "Engenheiro de software focado em sistemas escaláveis, APIs e boas práticas de arquitetura backend.",
-  image: `${base}images/lucas.png`,
-  tags: ["Backend", "Arquitetura", "APIs"],
-  color: "#3B82F6",
+    id: 7,
+    name: "Yuri Correia",
+    role: "DevOps",
+    company: "Tech Solutions",
+    topic: "Infraestrutura, automação e CI/CD",
+    image: `${base}images/yuri.png`,
+    quote:
+      "Grandes sistemas começam com pequenas ideias transformadas em código.",
   },
-
   {
-  id: 4,
-  name: "Gabriela Gomes",
-  role: "Engenheira de Requisitos",
-  company: "Tech Solutions",
-  topic: "Engenharia de requisitos e análise de sistemas",
-  bio: "Especialista em levantamento, análise e documentação de requisitos para sistemas complexos, atuando como ponte entre negócio e desenvolvimento.",
-  image: `${base}images/gabi.png`,
-  tags: ["Requisitos", "Análise de Sistemas", "Produto"],
-  color: "#F59E0B",
+    id: 3,
+    name: "João Lucas",
+    role: "Engenheiro de Software",
+    company: "Tech Solutions",
+    topic: "Arquitetura de sistemas e engenharia de software",
+    image: `${base}images/lucas.png`,
+    quote:
+      "Código bem escrito não resolve apenas problemas. Ele cria possibilidades.",
   },
-
   {
-  id: 5,
-  name: "Otávio Henrique",
-  role: "Gerente de Projetos",
-  company: "Tech Solutions",
-  topic: "Gestão de projetos e entrega de software",
-  bio: "Responsável pelo planejamento, coordenação e entrega de projetos de software, garantindo prazos, qualidade e alinhamento entre equipes técnicas e de negócio.",
-  image: `${base}images/otavio.png`,
-  tags: ["Gestão", "Scrum", "Projetos"],
-  color: "#EF4444",
+    id: 6,
+    name: "José Lucas Raposo",
+    role: "Engenheiro de Dados",
+    company: "Tech Solutions",
+    topic: "Agilidade e facilitação de times de desenvolvimento",
+    image: `${base}images/raposo.png`,
+    quote: "Os melhores produtos nascem quando bons times evoluem juntos.",
   },
-
   {
-  id: 6,
-  name: "João Lucas Barbosa",
-  role: "Scrum Master",
-  company: "Tech Solutions",
-  topic: "Agilidade e facilitação de times de desenvolvimento",
-  bio: "Facilitador de times ágeis com foco em melhoria contínua, remoção de impedimentos e otimização de processos no ciclo de desenvolvimento de software.",
-  image: `${base}images/joao.png`,
-  tags: ["Agile", "Scrum", "Facilitação"],
-  color: "#8B5CF6",
-  },
-  
-  {
-  id: 8,
-  name: "Rennan Barbosa",
-  role: "Analista de Requisitos",
-  company: "Tech Solutions",
-  topic: "Levantamento e análise de requisitos de sistemas",
-  bio: "Atua na identificação, análise e documentação de requisitos funcionais e não funcionais, garantindo clareza entre stakeholders e equipe de desenvolvimento.",
-  image: `${base}images/rennan.png`,
-  tags: ["Requisitos", "Análise", "Produto"],
-  color: "#F97316",
+    id: 8,
+    name: "Rennan Barbosa",
+    role: "Analista de Requisitos",
+    company: "Tech Solutions",
+    topic: "Levantamento e análise de requisitos de sistemas",
+    image: `${base}images/rennan.png`,
+    quote: "Clareza na ideia é o primeiro passo para qualidade no código.",
   },
 ];
 
-// ======================================================
-// CARD (UI PROFISSIONAL)
-// ======================================================
+const AUTOPLAY_TIME = 6000;
 
-function SpeakerCard({
+function SidePhoto({
   speaker,
-  position,
   onClick,
 }: {
   speaker: Speaker;
-  position: Position;
   onClick: () => void;
 }) {
-  const isCenter = position === "center";
-
-  const t: Record<
-    Position,
-    {
-      x: number;
-      scale: number;
-      opacity: number;
-      rotateY: number;
-      zIndex: number;
-      blur: number;
-    }
-  > = {
-    center: { x: 0, scale: 1, opacity: 1, rotateY: 0, zIndex: 30, blur: 0 },
-    left: { x: -260, scale: 0.84, opacity: 0.65, rotateY: 14, zIndex: 20, blur: 2 },
-    right: { x: 260, scale: 0.84, opacity: 0.65, rotateY: -14, zIndex: 20, blur: 2 },
-    "far-left": { x: -460, scale: 0.62, opacity: 0.28, rotateY: 22, zIndex: 10, blur: 4 },
-    "far-right": { x: 460, scale: 0.62, opacity: 0.28, rotateY: -22, zIndex: 10, blur: 4 },
-  };
-
-  const transform = t[position];
-
   return (
-    <motion.div
-      className="absolute cursor-pointer select-none"
-      style={{ zIndex: transform.zIndex }}
-      animate={{
-        x: transform.x,
-        scale: transform.scale,
-        opacity: transform.opacity,
-        rotateY: transform.rotateY,
-        filter: `blur(${transform.blur}px)`,
-      }}
-      transition={{ type: "spring", stiffness: 240, damping: 24 }}
+    <button
+      type="button"
       onClick={onClick}
-      whileHover={isCenter ? { y: -14 } : {}}
+      aria-label={`Ver ${speaker.name}`}
+      className="
+        group
+        hidden
+        h-20
+        w-20
+        overflow-hidden
+        rounded-full
+        border
+        border-white/10
+        bg-zinc-900
+        opacity-40
+        transition-all
+        duration-300
+        hover:scale-105
+        hover:opacity-70
+        md:block
+        lg:h-24
+        lg:w-24
+      "
     >
-      {/* CARD */}
-      <div
+      <img
+        src={speaker.image}
+        alt={speaker.name}
         className="
-          w-[350px]
-          overflow-hidden
-          rounded-[28px]
-          bg-gradient-to-b from-[#0A0A0A] to-[#050505]
-          border border-white/10
-          relative
+          h-full
+          w-full
+          object-cover
+          grayscale-[15%]
+          transition-transform
+          duration-500
+          group-hover:scale-105
         "
-        style={{
-          boxShadow: isCenter
-            ? `0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px ${speaker.color}22`
-            : "0 20px 50px rgba(0,0,0,0.5)",
-        }}
-      >
-        {/* IMAGE */}
-        <div className="relative h-[420px] overflow-hidden">
-          <motion.div
-            className="absolute inset-0 bg-cover bg-center scale-110"
-            style={{
-              backgroundImage: `url(${speaker.image})`,
-              filter: "contrast(1.05) saturate(1.05)",
-            }}
-            whileHover={{ scale: 1.15 }}
-            transition={{ duration: 0.8 }}
-          />
-
-          {/* DARK OVERLAY */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-
-          {/* COLOR GLOW */}
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{
-              background: `radial-gradient(circle at bottom, ${speaker.color}55, transparent 60%)`,
-            }}
-          />
-
-          {/* TAGS */}
-          <div className="absolute top-5 left-5 flex gap-2 flex-wrap">
-            {speaker.tags.map((tag) => (
-              <span
-                key={tag}
-                className="
-                  px-3 py-1
-                  text-[10px]
-                  uppercase
-                  tracking-[0.25em]
-                  text-white/80
-                  bg-black/40
-                  border border-white/10
-                  rounded-full
-                  backdrop-blur-md
-                "
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* TEXT */}
-          <div className="absolute bottom-0 p-7">
-            <h3 className="text-[28px] font-semibold text-white tracking-tight">
-              {speaker.name}
-            </h3>
-            <p className="text-sm text-white/70 mt-1">{speaker.role}</p>
-            <p className="text-xs text-white/40 mt-1 tracking-wide">
-              {speaker.company}
-            </p>
-          </div>
-        </div>
-
-        {/* EXPANDED */}
-        <AnimatePresence>
-          {isCenter && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.35 }}
-              className="p-7"
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <Sparkles size={14} color={speaker.color} />
-                <span className="text-xs uppercase tracking-[0.35em] text-white/60">
-                  NEXUS
-                </span>
-              </div>
-
-              <h4 className="text-white text-lg font-medium mb-3">
-                {speaker.topic}
-              </h4>
-
-              <p className="text-white/50 text-sm leading-relaxed mb-6">
-                {speaker.bio}
-              </p>
-
-              <div className="flex gap-3">
-                {[ExternalLink, Globe].map((Icon, i) => (
-                  <button
-                    key={i}
-                    className="
-                      w-11 h-11
-                      rounded-xl
-                      bg-white/5
-                      border border-white/10
-                      text-white/70
-                      flex items-center justify-center
-                      hover:bg-white/10
-                      hover:text-white
-                      transition
-                    "
-                  >
-                    <Icon size={16} />
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
+      />
+    </button>
   );
 }
 
-// ======================================================
-// SECTION
-// ======================================================
+function MainPhoto({ speaker }: { speaker: Speaker }) {
+  return (
+    <div
+      className="
+        relative
+        h-48
+        w-48
+        overflow-hidden
+        rounded-full
+        bg-zinc-900
+        sm:h-56
+        sm:w-56
+        lg:h-64
+        lg:w-64
+      "
+    >
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={speaker.id}
+          src={speaker.image}
+          alt={speaker.name}
+          initial={{
+            opacity: 0,
+            scale: 1.03,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.35,
+          }}
+          className="h-full w-full object-cover"
+        />
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function ArrowButton({
+  direction,
+  onClick,
+}: {
+  direction: "left" | "right";
+  onClick: () => void;
+}) {
+  const Icon = direction === "left" ? ChevronLeft : ChevronRight;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={direction === "left" ? "Pessoa anterior" : "Próxima pessoa"}
+      className="
+        flex
+        h-10
+        w-10
+        items-center
+        justify-center
+        rounded-full
+        border
+        border-white/10
+        text-white/40
+        transition-colors
+        hover:border-white/25
+        hover:text-white
+      "
+    >
+      <Icon className="h-4 w-4" />
+    </button>
+  );
+}
 
 export default function HighlightSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [direction, setDirection] = useState(1);
 
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  const isInView = useInView(sectionRef, {
+    once: true,
+    amount: 0.2,
+  });
 
   const total = speakers.length;
+  const activeSpeaker = speakers[activeIndex];
 
   const next = useCallback(() => {
-    setActiveIndex((i) => (i + 1) % total);
-  }, []);
+    setDirection(1);
 
-  const prev = useCallback(() => {
-    setActiveIndex((i) => (i - 1 + total) % total);
-  }, []);
+    setActiveIndex((current) => (current + 1) % total);
+  }, [total]);
+
+  const previous = useCallback(() => {
+    setDirection(-1);
+
+    setActiveIndex((current) => (current - 1 + total) % total);
+  }, [total]);
+
+  const selectSpeaker = (index: number) => {
+    if (index === activeIndex) return;
+
+    setDirection(index > activeIndex ? 1 : -1);
+    setActiveIndex(index);
+  };
 
   useEffect(() => {
     if (!isPlaying) return;
-    const id = setInterval(next, 4500);
-    return () => clearInterval(id);
-  }, [next, isPlaying]);
 
-  const getPosition = (i: number): Position | null => {
-    const diff = (i - activeIndex + total) % total;
+    const timer = window.setInterval(next, AUTOPLAY_TIME);
 
-    if (diff === 0) return "center";
-    if (diff === 1) return "right";
-    if (diff === total - 1) return "left";
-    if (diff === 2) return "far-right";
-    if (diff === total - 2) return "far-left";
-
-    return null;
-  };
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [isPlaying, next]);
 
   return (
-    <section ref={ref} className="relative py-32 bg-[#020202] overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="
+        relative
+        overflow-hidden
+        bg-[#050505]
+        py-28
+        text-white
+        sm:py-36
+      "
+    >
+      {/* Linha superior */}
 
-      {/* HEADER */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8 }}
-        className="text-center mb-24"
-      >
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-none tracking-[-0.06em] mb-8">
-          Mentes que
-          <span className="block bg-gradient-to-r from-green-300 via-emerald-400 to-green-600 text-transparent bg-clip-text">
-            Transformam
-          </span>
-        </h2>
-
-        <p className="max-w-2xl mx-auto text-zinc-400 text-lg leading-relaxed">
-          Especialistas em tecnologia, inteligência artificial, inovação, branding, games e transformação digital.
-        </p>
-      </motion.div>
-
-      {/* CAROUSEL */}
       <div
-        className="relative h-[820px] flex items-center justify-center"
-        style={{ perspective: "1800px" }}
-      >
-        {speakers.map((s, i) => {
-          const pos = getPosition(i);
-          if (!pos) return null;
+        className="
+          absolute
+          inset-x-0
+          top-0
+          h-px
+          bg-white/[0.06]
+        "
+      />
 
-          return (
-            <SpeakerCard
-              key={s.id}
-              speaker={s}
-              position={pos}
-              onClick={() => setActiveIndex(i)}
+      <div className="mx-auto max-w-6xl px-6">
+        {/* ==================================================
+            HEADER
+        ================================================== */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={
+            isInView
+              ? {
+                  opacity: 1,
+                  y: 0,
+                }
+              : {}
+          }
+          transition={{
+            duration: 0.6,
+          }}
+          className="
+            flex
+            flex-col
+            gap-8
+            md:flex-row
+            md:items-end
+            md:justify-between
+          "
+        >
+          <div>
+            <p
+              className="
+                mb-5
+                text-[11px]
+                font-medium
+                uppercase
+                tracking-[0.28em]
+                text-emerald-400
+              "
+            >
+              Pessoas & Tecnologia
+            </p>
+
+            <h2
+              className="
+                max-w-3xl
+                text-4xl
+                font-medium
+                leading-[1]
+                tracking-[-0.045em]
+                sm:text-5xl
+                lg:text-7xl
+              "
+            >
+              Quem está por trás
+              <span className="block text-zinc-500">da tecnologia.</span>
+            </h2>
+          </div>
+
+          <p
+            className="
+              max-w-sm
+              text-sm
+              leading-7
+              text-zinc-500
+            "
+          >
+            Diferentes pessoas, experiências e especialidades trabalhando na
+            construção de soluções.
+          </p>
+        </motion.div>
+
+        {/* ==================================================
+            CAROUSEL
+        ================================================== */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          animate={
+            isInView
+              ? {
+                  opacity: 1,
+                  y: 0,
+                }
+              : {}
+          }
+          transition={{
+            duration: 0.7,
+            delay: 0.1,
+          }}
+          className="mt-20"
+        >
+          {/* Fotos */}
+
+          <div
+            className="
+              flex
+              items-center
+              justify-center
+              gap-5
+              sm:gap-8
+            "
+          >
+            <SidePhoto
+              speaker={speakers[(activeIndex - 1 + total) % total]}
+              onClick={previous}
             />
-          );
-        })}
+
+            <MainPhoto speaker={activeSpeaker} />
+
+            <SidePhoto
+              speaker={speakers[(activeIndex + 1) % total]}
+              onClick={next}
+            />
+          </div>
+
+          {/* Conteúdo */}
+
+          <div className="mx-auto mt-14 max-w-4xl text-center">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={activeSpeaker.id}
+                custom={direction}
+                initial={{
+                  opacity: 0,
+                  x: direction > 0 ? 25 : -25,
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  x: direction > 0 ? -25 : 25,
+                }}
+                transition={{
+                  duration: 0.35,
+                }}
+              >
+                {/* Frase */}
+
+                <blockquote
+                  className="
+                    mx-auto
+                    max-w-3xl
+                    text-2xl
+                    font-medium
+                    leading-[1.25]
+                    tracking-[-0.025em]
+                    text-zinc-100
+                    sm:text-3xl
+                    md:text-4xl
+                    lg:text-[44px]
+                  "
+                >
+                  “{activeSpeaker.quote}”
+                </blockquote>
+
+                {/* Pessoa */}
+
+                <div className="mt-8">
+                  <h3
+                    className="
+                      text-lg
+                      font-medium
+                      text-white
+                    "
+                  >
+                    {activeSpeaker.name}
+                  </h3>
+
+                  <p
+                    className="
+                      mt-2
+                      text-sm
+                      text-zinc-500
+                    "
+                  >
+                    <span className="text-emerald-400">
+                      {activeSpeaker.role}
+                    </span>
+
+                    <span className="mx-2 text-zinc-700">/</span>
+
+                    {activeSpeaker.company}
+                  </p>
+                </div>
+
+                {/* Área */}
+
+                <p
+                  className="
+                    mx-auto
+                    mt-5
+                    max-w-lg
+                    text-sm
+                    leading-6
+                    text-zinc-600
+                  "
+                >
+                  {activeSpeaker.topic}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* =================================================
+              CONTROLES
+          ================================================== */}
+
+          <div
+            className="
+              mt-12
+              flex
+              items-center
+              justify-center
+              gap-4
+            "
+          >
+            <ArrowButton direction="left" onClick={previous} />
+
+            <div className="flex items-center gap-2 px-2">
+              {speakers.map((speaker, index) => (
+                <button
+                  key={speaker.id}
+                  type="button"
+                  onClick={() => selectSpeaker(index)}
+                  aria-label={`Selecionar ${speaker.name}`}
+                  className="p-1"
+                >
+                  <span
+                    className={`
+                      block
+                      h-1
+                      rounded-full
+                      transition-all
+                      duration-300
+                      ${
+                        index === activeIndex
+                          ? "w-6 bg-emerald-400"
+                          : "w-1.5 bg-zinc-700"
+                      }
+                    `}
+                  />
+                </button>
+              ))}
+            </div>
+
+            <ArrowButton direction="right" onClick={next} />
+
+            <button
+              type="button"
+              onClick={() => setIsPlaying((playing) => !playing)}
+              aria-label={
+                isPlaying ? "Pausar carrossel" : "Reproduzir carrossel"
+              }
+              className="
+                ml-1
+                flex
+                h-8
+                w-8
+                items-center
+                justify-center
+                text-zinc-600
+                transition-colors
+                hover:text-zinc-300
+              "
+            >
+              {isPlaying ? (
+                <Pause className="h-3 w-3" />
+              ) : (
+                <Play className="h-3 w-3" />
+              )}
+            </button>
+          </div>
+
+          {/* Barra de progresso */}
+
+          <div
+            className="
+              mx-auto
+              mt-8
+              h-px
+              max-w-[180px]
+              overflow-hidden
+              bg-white/[0.08]
+            "
+          >
+            <motion.div
+              key={`${activeSpeaker.id}-${isPlaying}`}
+              initial={{
+                width: "0%",
+              }}
+              animate={{
+                width: isPlaying ? "100%" : "0%",
+              }}
+              transition={{
+                duration: isPlaying ? AUTOPLAY_TIME / 1000 : 0,
+                ease: "linear",
+              }}
+              className="
+                h-full
+                bg-emerald-400
+              "
+            />
+          </div>
+        </motion.div>
+
+        {/* ==================================================
+            MOBILE INFO
+        ================================================== */}
+
+        <div
+          className="
+            mt-20
+            border-t
+            border-white/[0.06]
+            pt-5
+            md:hidden
+          "
+        >
+          <div className="flex justify-between">
+            <span
+              className="
+                text-[9px]
+                uppercase
+                tracking-[0.25em]
+                text-zinc-700
+              "
+            >
+              Nexus
+            </span>
+
+            <span
+              className="
+                text-[9px]
+                uppercase
+                tracking-[0.25em]
+                text-zinc-700
+              "
+            >
+              {String(activeIndex + 1).padStart(2, "0")} /{" "}
+              {String(total).padStart(2, "0")}
+            </span>
+          </div>
+        </div>
       </div>
-
-      {/* CONTROLS */}
-      <div className="flex justify-center items-center gap-6 mt-12">
-
-        <button
-          onClick={prev}
-          className="w-14 h-14 rounded-2xl bg-black/60 border border-green-500/20 text-green-400 flex items-center justify-center hover:bg-green-500/10 hover:border-green-400/50 transition"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-
-        <button
-          onClick={() => setIsPlaying((p) => !p)}
-          className="w-12 h-12 rounded-full bg-black/70 border border-green-500/30 text-green-400 flex items-center justify-center hover:bg-green-500/15 hover:border-green-400/60 transition"
-        >
-          {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-        </button>
-
-        <button
-          onClick={next}
-          className="w-14 h-14 rounded-2xl bg-black/60 border border-green-500/20 text-green-400 flex items-center justify-center hover:bg-green-500/10 hover:border-green-400/50 transition"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-
-      </div>
-
     </section>
   );
 }
