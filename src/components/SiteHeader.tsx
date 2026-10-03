@@ -129,7 +129,7 @@ import { Menu, X, ArrowUpRight } from "lucide-react";
                 {" "}
                 <img
                   src="public/logo.png"
-                  alt="Nexus"
+                  alt="Nexus"    
                   className=" h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-105 "
                 />{" "}
                 <div
