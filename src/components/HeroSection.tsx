@@ -270,7 +270,7 @@ export function HeroSection() {
           </motion.p>
 
           {/* =====================================================
-              CTA BUTTONS
+              CTA BUTTON
           ===================================================== */}
           <motion.div
             initial={{
@@ -288,14 +288,11 @@ export function HeroSection() {
             className="
               mt-10
               flex
-              flex-wrap
               justify-center
-              gap-4
             "
           >
-            {/* Primary CTA */}
             <a
-              href="#projetos"
+              href="https://nexus-frontend-murex-two.vercel.app/pages/index.html"
               className="
                 group
                 inline-flex
@@ -325,31 +322,6 @@ export function HeroSection() {
                   group-hover:translate-y-0.5
                 "
               />
-            </a>
-
-            {/* Secondary CTA */}
-            <a
-              href="#sobre"
-              className="
-                inline-flex
-                items-center
-                rounded-full
-                border
-                border-white/15
-                bg-white/[0.04]
-                px-7
-                py-3.5
-                text-sm
-                font-medium
-                text-white
-                backdrop-blur-xl
-                transition-all
-                duration-300
-                hover:border-emerald-300/30
-                hover:bg-emerald-300/[0.06]
-              "
-            >
-              Conheça a Nexus
             </a>
           </motion.div>
         </div>
