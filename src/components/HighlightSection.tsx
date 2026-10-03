@@ -18,9 +18,9 @@ const speakers: Speaker[] = [
   {
     id: 7,
     name: "Yuri Correia",
-    role: "DevOps",
+    role: "Engenheiro de Software",
     company: "Tech Solutions",
-    topic: "Infraestrutura, automação e CI/CD",
+    topic: "Desenvolvimento de sistemas e engenharia de software",
     image: `${base}images/yuri.png`,
     quote:
       "Grandes sistemas começam com pequenas ideias transformadas em código.",
@@ -28,9 +28,9 @@ const speakers: Speaker[] = [
   {
     id: 3,
     name: "João Lucas",
-    role: "Engenheiro de Software",
+    role: "Gerente de Projetos",
     company: "Tech Solutions",
-    topic: "Arquitetura de sistemas e engenharia de software",
+    topic: "Gestão, planejamento e acompanhamento de projetos",
     image: `${base}images/lucas.png`,
     quote:
       "Código bem escrito não resolve apenas problemas. Ele cria possibilidades.",
@@ -40,16 +40,16 @@ const speakers: Speaker[] = [
     name: "José Lucas Raposo",
     role: "Engenheiro de Dados",
     company: "Tech Solutions",
-    topic: "Agilidade e facilitação de times de desenvolvimento",
+    topic: "Dados, análise e engenharia de dados",
     image: `${base}images/raposo.png`,
     quote: "Os melhores produtos nascem quando bons times evoluem juntos.",
   },
   {
     id: 8,
     name: "Rennan Barbosa",
-    role: "Analista de Requisitos",
+    role: "Gerente de Requisitos",
     company: "Tech Solutions",
-    topic: "Levantamento e análise de requisitos de sistemas",
+    topic: "Levantamento, análise e gerenciamento de requisitos de sistemas",
     image: `${base}images/rennan.png`,
     quote: "Clareza na ideia é o primeiro passo para qualidade no código.",
   },
@@ -199,13 +199,11 @@ export default function HighlightSection() {
 
   const next = useCallback(() => {
     setDirection(1);
-
     setActiveIndex((current) => (current + 1) % total);
   }, [total]);
 
   const previous = useCallback(() => {
     setDirection(-1);
-
     setActiveIndex((current) => (current - 1 + total) % total);
   }, [total]);
 

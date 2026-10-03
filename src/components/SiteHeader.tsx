@@ -1,458 +1,313 @@
-/* =========================================================
- * HEADER PREMIUM — NEXUS
- * Navegação futurista premium
- * ========================================================= */
-
-import { useState, useEffect } from "react";
-
-import {
-  motion,
-  AnimatePresence,
-} from "framer-motion";
-
-import {
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
-
-import {
-  Menu,
-  X,
-} from "lucide-react";
-
-/* =========================================================
- * LINKS DE NAVEGAÇÃO
- * ========================================================= */
-
-const navLinks = [
-  { label: "Home", path: "/" },
-  { label: "História", path: "/historia" },
-  { label: "Galeria", path: "/fotos" },
-  { label: "Missão", path: "/missao" },
-  { label: "Documentos", path: "/documentos" },
-];
-
-/* =========================================================
- * COMPONENTE HEADER
- * ========================================================= */
-
-export function SiteHeader() {
+/* ========================================================= * HEADER PREMIUM — NEXUS * Header responsivo com: * - Logo Nexus * - Navegação desktop * - Menu mobile * - Detecção de rota ativa * - Header ocultável durante o scroll * - Reaparecimento ao rolar para cima * - Estado visual ao rolar * ========================================================= */ import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, ArrowUpRight } from "lucide-react";
+/* ========================================================= * LINKS DE NAVEGAÇÃO * ========================================================= */ const navLinks =
+  [
+    { label: "Home", path: "/" },
+    { label: "História", path: "/historia" },
+    { label: "Galeria", path: "/fotos" },
+    { label: "Missão", path: "/missao" },
+    { label: "Documentos", path: "/documentos" },
+  ];
+/* ========================================================= * COMPONENTE HEADER * ========================================================= */ export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
-
   const [scrolled, setScrolled] = useState(false);
-
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
   const location = useLocation();
-
   const navigate = useNavigate();
-
-  /* =======================================================
-   * DETECTA SCROLL
-   * ======================================================= */
-
-  useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 20);
+  /* ======================================================= * CONTROLE DO SCROLL * * No topo: * Header sempre visível. * * Rolando para baixo: * Header desaparece. * * Rolando para cima: * Header reaparece. * ======================================================= */ useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const previousScrollY = lastScrollY.current;
+      /* ----------------------------------------------- * Estado visual do header * ----------------------------------------------- */ setScrolled(
+        currentScrollY > 24,
+      );
+      /* ----------------------------------------------- * Sempre visível no topo * ----------------------------------------------- */ if (
+        currentScrollY <= 20
+      ) {
+        setHidden(false);
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+      /* ----------------------------------------------- * Calcula direção do scroll * ----------------------------------------------- */ const scrollDifference =
+        currentScrollY - previousScrollY;
+      /* ----------------------------------------------- * Atualiza a referência mesmo * em pequenas movimentações * ----------------------------------------------- */ lastScrollY.current =
+        currentScrollY;
+      /* ----------------------------------------------- * Ignora pequenas oscilações * ----------------------------------------------- */ if (
+        Math.abs(scrollDifference) < 5
+      ) {
+        return;
+      }
+      /* ----------------------------------------------- * Rolando para baixo * ----------------------------------------------- */ if (
+        scrollDifference > 0
+      ) {
+        setHidden(true);
+      } /* ----------------------------------------------- * Rolando para cima * ----------------------------------------------- */ else {
+        setHidden(false);
+      }
     };
-
-    window.addEventListener("scroll", onScroll, {
-      passive: true,
-    });
-
-    return () =>
-      window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
-
-  /* =======================================================
-   * NAVEGAÇÃO
-   * ======================================================= */
-
-  const handleNavigate = (path: string) => {
-    setMobileOpen(false);
-
-    navigate(path);
-  };
-
-  /* =======================================================
-   * LINK ATIVO
-   * ======================================================= */
-
-  const isActive = (path: string) => {
-    if (path === "/") {
-      return location.pathname === "/";
-    }
-
-    return location.pathname.startsWith(path);
-  };
-
-  return (
+  /* ======================================================= * FECHA MENU AO REDIMENSIONAR * ======================================================= */ useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMobileOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  /* ======================================================= * NAVEGAÇÃO * ======================================================= */ const handleNavigate =
+    (path: string) => {
+      /* * Fecha o menu imediatamente. */ setMobileOpen(false);
+      /* * Mostra novamente o header. */ setHidden(false);
+      /* * Evita navegação desnecessária * para a mesma rota. */ if (
+        location.pathname !== path
+      ) {
+        navigate(path);
+      }
+      /* * Volta para o topo. */ window.requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    };
+  /* ======================================================= * LINK ATIVO * ======================================================= */ const isActive =
+    (path: string) => {
+      if (path === "/") {
+        return location.pathname === "/";
+      }
+      return location.pathname.startsWith(path);
+    };
+  /* ======================================================= * RENDER * ======================================================= */ return (
     <>
-      {/* ===================================================
-       * HEADER PRINCIPAL
-       * =================================================== */}
-
+      {" "}
+      {/* =================================================== HEADER PRINCIPAL =================================================== */}{" "}
       <motion.header
-        initial={{
-          y: -30,
-          opacity: 0,
-        }}
-        animate={{
-          y: 0,
-          opacity: 1,
-        }}
-        transition={{
-          duration: 0.7,
-        }}
-        className={`
-          fixed
-          left-0
-          right-0
-          z-40
-          transition-all
-          duration-500
-          ${
-            scrolled
-              ? `
-                top-4
-                mx-auto
-                w-[95%]
-                max-w-7xl
-                rounded-3xl
-                border
-                border-white/10
-                bg-black/65
-                backdrop-blur-2xl
-                shadow-[0_10px_60px_rgba(0,0,0,0.45)]
-              `
-              : `
-                top-0
-                border-b
-                border-white/[0.05]
-                bg-black/40
-                backdrop-blur-xl
-              `
-          }
-        `}
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: hidden ? -130 : 0, opacity: hidden ? 0 : 1 }}
+        transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
+        className={` fixed left-0 right-0 z-50 transition-[top,width,max-width] duration-500 ${scrolled ? ` top-3 mx-auto w-[calc(100%-24px)] max-w-7xl rounded-2xl border border-white/[0.08] bg-[#050706]/90 shadow-[0_20px_70px_rgba(0,0,0,0.45)] backdrop-blur-2xl ` : ` top-0 border-b border-white/[0.05] bg-[#030504]/75 backdrop-blur-xl `} `}
       >
-        {/* ===================================================
-         * GLOW INTERNO
-         * =================================================== */}
-
+        {" "}
+        {/* ================================================= GLOW ================================================= */}{" "}
         <div
-          className="
-            absolute
-            inset-0
-            rounded-3xl
-            bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.12),transparent_60%)]
-            pointer-events-none
-          "
-        />
-
-        {/* ===================================================
-         * CONTAINER
-         * =================================================== */}
-
-        <div className="relative z-10 max-w-7xl mx-auto px-5 lg:px-8">
-
-          <div className="h-[82px] flex items-center justify-between">
-
-            {/* =============================================
-             * BRAND / NOME
-             * ============================================= */}
-
+          className=" pointer-events-none absolute inset-0 overflow-hidden rounded-2xl "
+          aria-hidden="true"
+        >
+          {" "}
+          <div className=" absolute left-[18%] top-0 h-24 w-64 -translate-y-1/2 rounded-full bg-emerald-500/[0.07] blur-3xl " />{" "}
+        </div>{" "}
+        {/* ================================================= CONTAINER ================================================= */}{" "}
+        <div className=" relative z-10 mx-auto max-w-7xl px-5 sm:px-7 lg:px-8 ">
+          {" "}
+          <div
+            className={` flex items-center justify-between transition-all duration-500 ${scrolled ? "h-[70px]" : "h-[82px]"} `}
+          >
+            {" "}
+            {/* ============================================= BRAND ============================================= */}{" "}
             <motion.button
-              whileHover={{
-                scale: 1.02,
-              }}
-              whileTap={{
-                scale: 0.97,
-              }}
+              type="button"
+              whileHover={{ scale: 1.015 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => handleNavigate("/")}
-              className="
-                relative
-                flex
-                items-center
-              "
+              className=" group relative flex items-center gap-3 text-left "
+              aria-label="Ir para a página inicial"
             >
-              {/* Glow */}
-              <div
-                className="
-                  absolute
-                  inset-0
-                  bg-emerald-400/10
-                  blur-2xl
-                  opacity-60
-                "
-              />
-
-              {/* Texto */}
-              <div className="relative z-10 text-left">
-
-                <h1
-                  className="
-                    text-white
-                    font-black
-                    text-[1.6rem]
-                    tracking-[-0.08em]
-                    leading-none
-                  "
+              {" "}
+              {/* Logo */}{" "}
+              <div className=" relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03] transition-all duration-300 group-hover:border-emerald-400/25 group-hover:bg-emerald-400/[0.05] ">
+                {" "}
+                <img
+                  src="public/logo.png"
+                  alt="Nexus"
+                  className=" h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-105 "
+                />{" "}
+                <div
+                  className=" pointer-events-none absolute inset-0 rounded-xl bg-emerald-400/[0.04] opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100 "
+                  aria-hidden="true"
+                />{" "}
+              </div>{" "}
+              {/* Nome */}{" "}
+              <div className="flex flex-col">
+                {" "}
+                <span
+                  className=" text-[1.25rem] font-bold leading-none tracking-[-0.04em] text-white "
+                  style={{ fontFamily: "Poppins, sans-serif" }}
                 >
-                  NEXUS
-                </h1>
-
-                <p
-                  className="
-                    text-[10px]
-                    uppercase
-                    tracking-[0.32em]
-                    text-zinc-500
-                    mt-1.5
-                  "
-                >
-                  Inteligência Sustentável e Inovadora
-                </p>
-              </div>
-            </motion.button>
-
-            {/* =============================================
-             * NAVEGAÇÃO DESKTOP
-             * ============================================= */}
-
+                  {" "}
+                  Nexus{" "}
+                </span>{" "}
+                <span className=" mt-1.5 hidden text-[8px] font-medium uppercase tracking-[0.24em] text-zinc-600 sm:block ">
+                  {" "}
+                  Inteligência Sustentável{" "}
+                </span>{" "}
+              </div>{" "}
+            </motion.button>{" "}
+            {/* ============================================= NAVEGAÇÃO DESKTOP ============================================= */}{" "}
             <nav
-              className="
-                hidden
-                lg:flex
-                items-center
-                gap-1
-              "
+              className=" hidden items-center gap-1 lg:flex "
+              aria-label="Navegação principal"
             >
+              {" "}
               {navLinks.map((link) => {
                 const active = isActive(link.path);
-
                 return (
                   <button
+                    type="button"
                     key={link.path}
-                    onClick={() =>
-                      handleNavigate(link.path)
-                    }
-                    className="
-                      relative
-                      px-4
-                      py-3
-                      rounded-2xl
-                      overflow-hidden
-                      group
-                    "
+                    onClick={() => handleNavigate(link.path)}
+                    className={` group relative rounded-xl px-4 py-2.5 text-sm transition-all duration-300 ${active ? "text-emerald-300" : "text-zinc-500 hover:text-white"} `}
                   >
-                    {/* Hover glow */}
-                    <div
-                      className="
-                        absolute
-                        inset-0
-                        opacity-0
-                        group-hover:opacity-100
-                        transition-opacity
-                        duration-300
-                        bg-emerald-500/5
-                      "
-                    />
-
-                    {/* Texto */}
+                    {" "}
+                    {/* Fundo */}{" "}
                     <span
-                      className={`
-                        relative
-                        z-10
-                        text-[0.82rem]
-                        font-medium
-                        transition-all
-                        duration-300
-                        ${
-                          active
-                            ? "text-emerald-300"
-                            : "text-zinc-400 group-hover:text-white"
-                        }
-                      `}
-                    >
-                      {link.label}
-                    </span>
-
-                    {/* Linha ativa */}
+                      className={` pointer-events-none absolute inset-0 rounded-xl transition-all duration-300 ${active ? "bg-emerald-400/[0.07]" : "bg-white/[0.03] opacity-0 group-hover:opacity-100"} `}
+                      aria-hidden="true"
+                    />{" "}
+                    <span className="relative z-10"> {link.label} </span>{" "}
+                    {/* Indicador ativo */}{" "}
                     {active && (
-                      <motion.div
-                        layoutId="active-nav"
-                        className="
-                          absolute
-                          bottom-1
-                          left-3
-                          right-3
-                          h-[2px]
-                          rounded-full
-                          bg-gradient-to-r
-                          from-emerald-400
-                          to-green-500
-                        "
+                      <motion.span
+                        layoutId="nexus-active-nav"
+                        className=" absolute bottom-1 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-emerald-400 "
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 30,
+                        }}
                       />
-                    )}
+                    )}{" "}
                   </button>
                 );
-              })}
-            </nav>
-
-            {/* =============================================
-             * BOTÃO MOBILE
-             * ============================================= */}
-
+              })}{" "}
+            </nav>{" "}
+            {/* ============================================= BOTÃO DOCUMENTOS ============================================= */}{" "}
+            <div className="hidden lg:flex">
+              {" "}
+              <motion.button
+                type="button"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => handleNavigate("/documentos")}
+                className=" group inline-flex items-center gap-2 rounded-full border border-white/[0.09] bg-white/[0.04] px-4 py-2.5 text-xs font-medium text-zinc-300 transition-all duration-300 hover:border-emerald-400/20 hover:bg-emerald-400/[0.07] hover:text-white "
+              >
+                {" "}
+                Documentos{" "}
+                <ArrowUpRight
+                  size={14}
+                  aria-hidden="true"
+                  className=" text-zinc-600 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-emerald-400 "
+                />{" "}
+              </motion.button>{" "}
+            </div>{" "}
+            {/* ============================================= BOTÃO MOBILE ============================================= */}{" "}
             <motion.button
-              whileTap={{
-                scale: 0.92,
-              }}
-              onClick={() =>
-                setMobileOpen(!mobileOpen)
-              }
-              className="
-                lg:hidden
-                relative
-                flex
-                items-center
-                justify-center
-                w-12
-                h-12
-                rounded-2xl
-                border
-                border-white/10
-                bg-white/[0.03]
-                text-white
-              "
+              type="button"
+              whileTap={{ scale: 0.92 }}
+              onClick={() => setMobileOpen((previous) => !previous)}
+              className=" relative flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-zinc-300 transition-all duration-300 hover:border-emerald-400/20 hover:bg-emerald-400/[0.05] hover:text-white lg:hidden "
+              aria-label={mobileOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={mobileOpen}
+              aria-controls="nexus-mobile-menu"
             >
+              {" "}
               <AnimatePresence mode="wait">
-
+                {" "}
                 <motion.div
                   key={mobileOpen ? "close" : "menu"}
-                  initial={{
-                    rotate: -90,
-                    opacity: 0,
-                  }}
-                  animate={{
-                    rotate: 0,
-                    opacity: 1,
-                  }}
-                  exit={{
-                    rotate: 90,
-                    opacity: 0,
-                  }}
-                  transition={{
-                    duration: 0.2,
-                  }}
+                  initial={{ rotate: -45, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 45, opacity: 0 }}
+                  transition={{ duration: 0.18 }}
                 >
+                  {" "}
                   {mobileOpen ? (
-                    <X size={22} />
+                    <X size={20} aria-hidden="true" />
                   ) : (
-                    <Menu size={22} />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </motion.button>
-          </div>
-        </div>
-
-        {/* ===================================================
-         * MENU MOBILE
-         * =================================================== */}
-
+                    <Menu size={20} aria-hidden="true" />
+                  )}{" "}
+                </motion.div>{" "}
+              </AnimatePresence>{" "}
+            </motion.button>{" "}
+          </div>{" "}
+        </div>{" "}
+        {/* ================================================= MENU MOBILE ================================================= */}{" "}
         <AnimatePresence>
+          {" "}
           {mobileOpen && (
             <motion.div
-              initial={{
-                opacity: 0,
-                height: 0,
-              }}
-              animate={{
-                opacity: 1,
-                height: "auto",
-              }}
-              exit={{
-                opacity: 0,
-                height: 0,
-              }}
-              transition={{
-                duration: 0.35,
-              }}
-              className="
-                lg:hidden
-                overflow-hidden
-                border-t
-                border-white/[0.05]
-                bg-black/95
-                backdrop-blur-3xl
-              "
+              id="nexus-mobile-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className=" overflow-hidden border-t border-white/[0.06] bg-[#030504]/95 backdrop-blur-2xl lg:hidden "
             >
-              <div className="px-5 py-6">
-
-                {/* Links */}
-                <div className="flex flex-col gap-2">
-
+              {" "}
+              <div className="px-5 py-5 sm:px-7">
+                {" "}
+                <nav
+                  className="flex flex-col gap-1.5"
+                  aria-label="Navegação mobile"
+                >
+                  {" "}
                   {navLinks.map((link) => {
                     const active = isActive(link.path);
-
                     return (
                       <motion.button
-                        whileTap={{
-                          scale: 0.98,
-                        }}
+                        type="button"
+                        whileTap={{ scale: 0.985 }}
                         key={link.path}
-                        onClick={() =>
-                          handleNavigate(link.path)
-                        }
-                        className={`
-                          relative
-                          overflow-hidden
-                          text-left
-                          px-5
-                          py-4
-                          rounded-2xl
-                          transition-all
-                          duration-300
-                          ${
-                            active
-                              ? `
-                                border
-                                border-emerald-500/15
-                                bg-emerald-500/10
-                                text-emerald-300
-                              `
-                              : `
-                                bg-white/[0.02]
-                                text-zinc-300
-                                hover:bg-white/[0.05]
-                              `
-                          }
-                        `}
+                        onClick={() => handleNavigate(link.path)}
+                        className={` group relative flex w-full items-center justify-between overflow-hidden rounded-xl px-4 py-3.5 text-left transition-all duration-300 ${active ? ` border border-emerald-400/10 bg-emerald-400/[0.06] text-emerald-300 ` : ` border border-transparent text-zinc-400 hover:bg-white/[0.03] hover:text-white `} `}
                       >
-                        {/* Glow ativo */}
+                        {" "}
+                        <span className="relative z-10 text-sm font-medium">
+                          {" "}
+                          {link.label}{" "}
+                        </span>{" "}
                         {active && (
-                          <div
-                            className="
-                              absolute
-                              inset-0
-                              bg-gradient-to-r
-                              from-emerald-500/10
-                              to-transparent
-                            "
+                          <span
+                            className=" relative z-10 h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.7)] "
+                            aria-hidden="true"
                           />
-                        )}
-
-                        <span className="relative z-10">
-                          {link.label}
-                        </span>
+                        )}{" "}
+                        <span
+                          className=" pointer-events-none absolute inset-y-0 left-0 w-20 -translate-x-full bg-gradient-to-r from-emerald-400/[0.06] to-transparent transition-transform duration-500 group-hover:translate-x-0 "
+                          aria-hidden="true"
+                        />{" "}
                       </motion.button>
                     );
-                  })}
-                </div>
-
-              </div>
+                  })}{" "}
+                </nav>{" "}
+                {/* ========================================= RODAPÉ DO MENU MOBILE ========================================= */}{" "}
+                <div className=" mt-5 border-t border-white/[0.06] pt-5 ">
+                  {" "}
+                  <p className=" text-[9px] font-medium uppercase tracking-[0.25em] text-zinc-700 ">
+                    {" "}
+                    Nexus{" "}
+                  </p>{" "}
+                  <p className=" mt-2 text-xs leading-5 text-zinc-600 ">
+                    {" "}
+                    Inteligência sustentável e inovação através da
+                    tecnologia.{" "}
+                  </p>{" "}
+                </div>{" "}
+              </div>{" "}
             </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.header>
+          )}{" "}
+        </AnimatePresence>{" "}
+      </motion.header>{" "}
     </>
   );
 }
